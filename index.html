@@ -13,7 +13,7 @@
       <div class="d-flex align-items-center col-md-10 col-11">
         <div id="startPage" class="bg-white col-12 text-center p-4">
           <h2 class="pb-3">ClickerEmpireGame</h2>
-          <div class="d-flex justify-content-around">
+          <div class="d-flex justify-content-around m-4">
             <button class="btn btn-warning col-4" onclick="Controller.showRegisterPage()">はじめから</button>
             <button class="btn btn-warning col-4">つづきから</button>
           </div>
@@ -22,11 +22,11 @@
         <div id="registerPage" class="bg-white col-12 text-center p-4 d-none">
           <h2 class="pb-3">名前を入力してください</h2>
           <form>
-            <div class="form-group">
-              <input id="userForm" type="text" name="userName" class="form-control" placeholder="userName" value="fdsfdsf" required />
+            <div class="form-group d-flex justify-content-center">
+              <input id="userForm" type="text" name="userName" class="form-control col-8" placeholder="userName" value="fdsfdsf" required />
             </div>
           </form>
-          <div class="d-flex justify-content-around">
+          <div class="d-flex justify-content-around m-2">
             <button class="btn btn-warning col-4" onclick="Controller.backStartPage()">戻る</button>
             <button class="btn btn-warning col-4" onclick="Controller.startGame()">次へ</button>
           </div>
@@ -37,7 +37,7 @@
           <div class="d-flex justify-content-around">
             <div id="leftDiv" class="col-4"></div>
             <div id="rightDiv" class="col-8">
-              <div id="rightDivProfile"></div>
+              <div id="rightDivProfile" class="mb-4"></div>
               <div id="rightDivItem" class="overflow-auto"></div>
               <div id="rightDivPurchase" class="d-none"></div>
             </div>

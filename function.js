@@ -17,7 +17,7 @@ class View {
     let container = `
       <h4 id="burgersCount">${user.burgers} Burgers</h4>
       <h4 id="burgerProfit">$${user.burgerProfit}/クリック</h4>
-      <img id="burgerImg" src="https://4.bp.blogspot.com/-PNH44j6odcg/WwJaPJri5oI/AAAAAAABMK4/V_U6WfMGTtIodWf8nMxVj-75aZ-zfsa5ACLcBGAs/s800/hamburger_meat_sauce.png"
+      <img id="burgerImg" class="mt-2" src="https://4.bp.blogspot.com/-PNH44j6odcg/WwJaPJri5oI/AAAAAAABMK4/V_U6WfMGTtIodWf8nMxVj-75aZ-zfsa5ACLcBGAs/s800/hamburger_meat_sauce.png"
        width="200px"
       >
     `;
@@ -27,10 +27,10 @@ class View {
   static rightDivProfileView(user) {
     let container = `
       <div class="d-flex flex-wrap">
-        <div class="col-6">${user.name}</div>
-        <div class="col-6">${user.age}歳</div>
-        <div class="col-6">${day}日目</div>
-        <div class="col-6">$${user.money}</div>
+        <div class="col-6 border">${user.name}</div>
+        <div class="col-6 border">${user.age}歳</div>
+        <div class="col-6 border">${day}日目</div>
+        <div class="col-6 border">$${user.money}</div>
       </div>
     `;
     return container;
@@ -41,14 +41,16 @@ class View {
     for (let i = 0; i < items.length; i++) {
       let limit = items[i].type == "invest" ? "∞" : items[i].limit;
       let itemContainer = `
-        <div id="itemList" class="d-flex">
-          <img src="${items[i].img}" width="100px">
-          <div>
-            <p>${items[i].name}</p>
-            <p>${items[i].price}</p>
+        <div id="itemList" class="d-flex border p-2">
+          <img src="${items[i].img}" class="col-2" width="100px">
+          <div class="col-4 ml-4 text-left d-flex align-items-center">
+            <div>
+              <p>${items[i].name}</p>
+              <p>$${items[i].price}</p>
+            </div>
           </div>
-          <div>${items[i].profitDescription()}</div>
-          <div>${items[i].hold} / ${limit}</div>
+          <div class="col-4 d-flex align-items-center">${items[i].profitDescription()}</div>
+          <div class="col-2 d-flex align-items-center">${items[i].hold} / ${limit}</div>
         </div>
       `;
       container += itemContainer;
@@ -176,11 +178,6 @@ class Controller {
 
     nextBtn.addEventListener("click", function () {
       Controller.purchaseItem(item);
-      // Controller.displayNone(config.rightDivPurchase);
-      // Controller.displayBlock(config.rightDivItem);
-      // config.rightDivItem.innerHTML = "";
-      // config.rightDivItem.innerHTML = View.rightDivItemView();
-      // Controller.createMainPage(user);
     });
   }
 
@@ -250,16 +247,14 @@ class Item {
       unit = "sec";
       increase = this.price * this.profit;
     } else if (this.type == "realEstate") {
-      unit = "click";
+      unit = "sec";
       increase = this.profit;
     }
 
-    if (this.type == "invest") {
-      return `
+    return `
         <p>+$${increase} / ${unit}</p>
         <p>
     `;
-    }
   }
 }
 
