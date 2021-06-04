@@ -1,0 +1,55 @@
+body {
+  font-family: Futura !important;
+  letter-spacing: 0.02em !important;
+}
+
+p {
+  margin: 0 !important;
+}
+
+/* font-size */
+.rem1p3 {
+  font-size: 1.3rem;
+}
+
+.rem1p5 {
+  font-size: 1.5rem;
+}
+
+/* background */
+.bg-green {
+  background: #4ba3a1;
+}
+
+.bg-blue {
+  background: #1a4567;
+}
+
+/* effect */
+.hover {
+  cursor: pointer;
+}
+
+.hover:hover {
+  opacity: 0.9;
+}
+
+/* specific layout */
+.money-box {
+  margin: 1em 0;
+  border: double 5px white;
+  background: #1a4567;
+  color: white;
+}
+
+.calculation-box {
+  margin: 0.5em 0;
+  padding: 0.5em 0;
+  border: solid 2px white;
+  background: #1a4567;
+  color: white;
+}
+
+#rightDivItem {
+  max-height: 400px;
+}

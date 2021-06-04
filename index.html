@@ -6,9 +6,46 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
-    <title>Clicker Empire Game</title>
+    <title>ClickerEmpireGame</title>
   </head>
-  <body id="target" class="vh-100">
+  <body id="target">
+    <div class="vh-100 bg-dark d-flex flex-column justify-content-center align-items-center">
+      <div class="d-flex align-items-center col-md-10 col-11">
+        <div id="startPage" class="bg-white col-12 text-center p-4">
+          <h2 class="pb-3">ClickerEmpireGame</h2>
+          <div class="d-flex justify-content-around">
+            <button class="btn btn-warning col-4" onclick="Controller.showRegisterPage()">はじめから</button>
+            <button class="btn btn-warning col-4">つづきから</button>
+          </div>
+        </div>
+        <!-- 2ページ目の枠 -->
+        <div id="registerPage" class="bg-white col-12 text-center p-4 d-none">
+          <h2 class="pb-3">名前を入力してください</h2>
+          <form>
+            <div class="form-group">
+              <input id="userForm" type="text" name="userName" class="form-control" placeholder="userName" value="fdsfdsf" required />
+            </div>
+          </form>
+          <div class="d-flex justify-content-around">
+            <button class="btn btn-warning col-4" onclick="Controller.backStartPage()">戻る</button>
+            <button class="btn btn-warning col-4" onclick="Controller.startGame()">次へ</button>
+          </div>
+        </div>
+
+        <!-- menu先のページ -->
+        <div id="mainPage" class="bg-white col-12 p-4 text-center d-none">
+          <div class="d-flex justify-content-around">
+            <div id="leftDiv" class="col-4"></div>
+            <div id="rightDiv" class="col-8">
+              <div id="rightDivProfile"></div>
+              <div id="rightDivItem" class="overflow-auto"></div>
+              <div id="rightDivPurchase" class="d-none"></div>
+            </div>
+          </div>
+        </div>
+        <div id="purchasePage" class="bg-white col-12 text-center d-none"></div>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
     <script src="function.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
