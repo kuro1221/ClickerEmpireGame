@@ -17,9 +17,10 @@ class View {
     let container = `
       <h4 id="burgersCount">${user.burgers} Burgers</h4>
       <h4 id="burgerProfit">$${user.burgerProfit}/クリック</h4>
-      <img id="burgerImg" class="mt-2" src="https://4.bp.blogspot.com/-PNH44j6odcg/WwJaPJri5oI/AAAAAAABMK4/V_U6WfMGTtIodWf8nMxVj-75aZ-zfsa5ACLcBGAs/s800/hamburger_meat_sauce.png"
+      <img id="burgerImg" class="mt-2 hover" src="https://cdn.pixabay.com/photo/2014/04/02/17/00/burger-307648_960_720.png"
        width="200px"
       >
+      <button id="save" class="btn btn-warning col-6 mt-4">セーブ</button>
     `;
     return container;
   }
@@ -41,7 +42,7 @@ class View {
     for (let i = 0; i < items.length; i++) {
       let limit = items[i].type == "invest" ? "∞" : items[i].limit;
       let itemContainer = `
-        <div id="itemList" class="d-flex border p-2">
+        <div id="itemList" class="d-flex border p-2 hover">
           <img src="${items[i].img}" class="col-2" width="100px">
           <div class="col-4 ml-4 text-left d-flex align-items-center">
             <div>
@@ -49,7 +50,7 @@ class View {
               <p>$${items[i].price}</p>
             </div>
           </div>
-          <div class="col-4 d-flex align-items-center">${items[i].profitDescription()}</div>
+          <div class="col-4 d-flex align-items-center">${View.profitDescription(items[i])}</div>
           <div class="col-2 d-flex align-items-center">${items[i].hold} / ${limit}</div>
         </div>
       `;
@@ -72,6 +73,26 @@ class View {
       </div>
     `;
     return container;
+  }
+
+  static profitDescription(item) {
+    let unit;
+    let increase;
+    if (item.type == "ability") {
+      unit = "click";
+      increase = item.profit;
+    } else if (item.type == "invest") {
+      unit = "sec";
+      increase = item.price * item.profit;
+    } else if (item.type == "realEstate") {
+      unit = "sec";
+      increase = item.profit;
+    }
+
+    return `
+        <p>+$${increase} / ${unit}</p>
+        <p>
+    `;
   }
 }
 
@@ -98,26 +119,51 @@ class Controller {
 
   //ユーザー登録ページに進む
   static showRegisterPage() {
-    this.displayNone(config.startPage);
-    this.displayBlock(config.registerPage);
+    Controller.displayNone(config.startPage);
+    Controller.displayBlock(config.registerPage);
   }
 
   //スタートページに戻る
   static backStartPage() {
-    this.displayNone(config.registerPage);
-    this.displayBlock(config.startPage);
+    Controller.displayNone(config.registerPage);
+    Controller.displayBlock(config.startPage);
   }
 
   //ゲームをスタートさせ、メイン画面に進む
   static startGame() {
     const userForm = document.getElementById("userForm");
-    user = new User(userForm.value, 20, 20, 25, 0, 100, 0, 0);
-    this.displayNone(config.registerPage);
-    this.displayBlock(config.mainPage);
-    this.createMainPage(user);
+    user = new User(userForm.value, 20, 10000, 25, 0, 0, 0, 0);
+    Controller.displayNone(config.registerPage);
+    Controller.displayBlock(config.mainPage);
+    Controller.createMainPage(user);
     setInterval(() => {
-      this.nextDay();
+      Controller.nextDay();
     }, 1000);
+  }
+
+  //セーブ
+  static save() {
+    localStorage.setItem("userData", JSON.stringify(user));
+    localStorage.setItem("itemsData", JSON.stringify(items));
+    localStorage.setItem("dayData", day);
+    alert("保存しました");
+  }
+
+  static saveStart() {
+    if (localStorage.getItem("userData" === null)) {
+      alert("保存されていません");
+    }
+    {
+      Controller.displayNone(config.startPage);
+      Controller.displayBlock(config.mainPage);
+      user = JSON.parse(localStorage.getItem("userData"));
+      items = JSON.parse(localStorage.getItem("itemsData"));
+      day = parseInt(localStorage.getItem("dayData"));
+      Controller.createMainPage(user);
+      setInterval(() => {
+        Controller.nextDay();
+      }, 1000);
+    }
   }
 
   //メインページの作成
@@ -125,9 +171,16 @@ class Controller {
     config.leftDiv.innerHTML = View.leftDivView(user);
     config.rightDivProfile.innerHTML = View.rightDivProfileView(user);
     let burgerImg = document.getElementById("burgerImg");
+    let saveBtn = document.getElementById("save");
+
     burgerImg.addEventListener("click", function () {
       Controller.clickBurger(user);
     });
+
+    saveBtn.addEventListener("click", function () {
+      Controller.save();
+    });
+
     rightDivItem.innerHTML = View.rightDivItemView();
 
     for (let i = 0; i < items.length; i++) {
@@ -186,7 +239,7 @@ class Controller {
     let purchaseNumber = parseInt(document.getElementById("purchaseNumber").value);
     if (user.money >= item.price * purchaseNumber) {
       if (item.hold + purchaseNumber <= item.limit) {
-        this.assetUpdate(item, purchaseNumber);
+        Controller.assetUpdate(item, purchaseNumber);
         Controller.displayNone(config.rightDivPurchase);
         Controller.displayBlock(config.rightDivItem);
         Controller.createMainPage(user);
@@ -206,9 +259,13 @@ class Controller {
       user.burgerProfit = item.profit * (item.hold + 1);
       burgerProfit.innerHTML = "";
       burgerProfit.innerHTML = `$${user.burgerProfit}/クリック`;
-    } else if (item.name == "米国株式ETF") {
+    } else if (item.name == "ETF Stock") {
       user.totalStock += item.price * purchaseNumber;
       item.price = item.price * 1.1;
+    } else if (item.name == "ETF Bonds") {
+      user.totalBonds = item.price * item.hold;
+    } else if (item.type == "realEstate") {
+      user.totalIncome += item.profit * purchaseNumber;
     }
   }
 }
@@ -236,30 +293,10 @@ class Item {
     this.hold = hold;
     this.img = img;
   }
-
-  profitDescription() {
-    let unit;
-    let increase;
-    if (this.type == "ability") {
-      unit = "click";
-      increase = this.profit;
-    } else if (this.type == "invest") {
-      unit = "sec";
-      increase = this.price * this.profit;
-    } else if (this.type == "realEstate") {
-      unit = "sec";
-      increase = this.profit;
-    }
-
-    return `
-        <p>+$${increase} / ${unit}</p>
-        <p>
-    `;
-  }
 }
 
-const items = [
-  new Item("Filip Machine", "ability", 500, 150, 25, 0, "https://cdn.pixabay.com/photo/2014/04/02/17/00/burger-307648_960_720.png"),
+let items = [
+  new Item("Filip Machine", "ability", 500, 150, 25, 0, "https://cdn.pixabay.com/photo/2019/06/30/20/09/grill-4308709_960_720.png"),
   new Item("ETF Stock", "invest", 99999999, 30000, 0.1, 0, "https://cdn.pixabay.com/photo/2016/03/31/20/51/chart-1296049_960_720.png"),
   new Item("ETF Bonds", "invest", 99999999, 30000, 0.07, 0, "https://cdn.pixabay.com/photo/2016/03/31/20/51/chart-1296049_960_720.png"),
   new Item("Lemonade Stand", "realEstate", 1000, 30000, 30, 0, "https://cdn.pixabay.com/photo/2012/04/15/20/36/juice-35236_960_720.png"),
