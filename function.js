@@ -65,7 +65,7 @@ class View {
         <p>${item.name}</p>
         <p>最大保有可能数:${item.limit}</p>
         <p>価格:$${item.price}</p>
-        <input id="purchaseNumber" type="number" value=1 min=1>
+        <input id="purchaseNumber" type="number" value=1 min=1 style="text-align:right">
         <div class="d-flex m-4 justify-content-around">
           <button class="btn btn-warning col-4 back-btn">戻る</button>
           <button class="btn btn-warning col-4 next-btn">購入</button>
@@ -75,6 +75,7 @@ class View {
     return container;
   }
 
+  //購入した場合の利益の説明
   static profitDescription(item) {
     let unit;
     let increase;
@@ -141,29 +142,17 @@ class Controller {
     }, 1000);
   }
 
-  //セーブ
-  static save() {
-    localStorage.setItem("userData", JSON.stringify(user));
-    localStorage.setItem("itemsData", JSON.stringify(items));
-    localStorage.setItem("dayData", day);
-    alert("保存しました");
-  }
+  //1日毎の処理
+  static nextDay() {
+    day += 1;
+    if (day % 365 == 0) user.age += 1;
+    user.money += user.totalBonds * hashMap["ETF Bonds"].profit;
+    user.money += user.totalStock * hashMap["ETF Stock"].profit;
+    user.money += user.totalIncome;
 
-  static saveStart() {
-    if (localStorage.getItem("userData" === null)) {
-      alert("保存されていません");
-    }
-    {
-      Controller.displayNone(config.startPage);
-      Controller.displayBlock(config.mainPage);
-      user = JSON.parse(localStorage.getItem("userData"));
-      items = JSON.parse(localStorage.getItem("itemsData"));
-      day = parseInt(localStorage.getItem("dayData"));
-      Controller.createMainPage(user);
-      setInterval(() => {
-        Controller.nextDay();
-      }, 1000);
-    }
+    //プロフィール画面の更新
+    config.rightDivProfile.innerHTML = "";
+    config.rightDivProfile.innerHTML += View.rightDivProfileView(user);
   }
 
   //メインページの作成
@@ -191,18 +180,6 @@ class Controller {
     }
   }
 
-  static nextDay() {
-    day += 1;
-    if (day % 365 == 0) user.age += 1;
-    user.money += user.totalBonds * hashMap["ETF Bonds"].profit;
-    user.money += user.totalStock * hashMap["ETF Stock"].profit;
-    user.money += user.totalIncome;
-
-    //プロフィール画面の更新
-    config.rightDivProfile.innerHTML = "";
-    config.rightDivProfile.innerHTML += View.rightDivProfileView(user);
-  }
-
   //ハンバーガーをクリックした時の処理
   static clickBurger(user) {
     let burgersCount = document.getElementById("burgersCount");
@@ -215,7 +192,7 @@ class Controller {
     config.rightDivProfile.innerHTML += View.rightDivProfileView(user);
   }
 
-  //商品をクリックした場合
+  //商品をクリックした後の処理
   static clickItem(item) {
     Controller.displayNone(config.rightDivItem);
     Controller.displayBlock(config.rightDivPurchase);
@@ -251,6 +228,7 @@ class Controller {
     }
   }
 
+  //保有資産の増加処理
   static assetUpdate(item, purchaseNumber) {
     user.money -= item.price * purchaseNumber;
     item.hold += purchaseNumber;
@@ -266,6 +244,31 @@ class Controller {
       user.totalBonds = item.price * item.hold;
     } else if (item.type == "realEstate") {
       user.totalIncome += item.profit * purchaseNumber;
+    }
+  }
+
+  //セーブ
+  static save() {
+    localStorage.setItem("userData", JSON.stringify(user));
+    localStorage.setItem("itemsData", JSON.stringify(items));
+    localStorage.setItem("dayData", day);
+    alert("保存しました");
+  }
+
+  //セーブ箇所からのスタート
+  static saveStart() {
+    if (localStorage.getItem("userData" === null)) {
+      alert("保存されていません");
+    } else {
+      Controller.displayNone(config.startPage);
+      Controller.displayBlock(config.mainPage);
+      user = JSON.parse(localStorage.getItem("userData"));
+      items = JSON.parse(localStorage.getItem("itemsData"));
+      day = parseInt(localStorage.getItem("dayData"));
+      Controller.createMainPage(user);
+      setInterval(() => {
+        Controller.nextDay();
+      }, 1000);
     }
   }
 }
