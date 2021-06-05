@@ -20,6 +20,7 @@ class View {
       <img id="burgerImg" class="mt-2 hover" src="https://cdn.pixabay.com/photo/2014/04/02/17/00/burger-307648_960_720.png"
        width="200px"
       >
+      <br>
       <button id="save" class="btn btn-warning col-6 mt-4">セーブ</button>
     `;
     return container;
