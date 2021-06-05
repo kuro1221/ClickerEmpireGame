@@ -8,6 +8,7 @@ Recursion Project3 ClickerEmpireGame
 ハンバーガーをクリックしてお金を稼ぎ、資産を増やしていくゲームです。
 
 サンプル画面
+https://kuro1221.github.io/ClickerEmpireGame/
 
 - Bootstrap
 - Pure JavaScript
